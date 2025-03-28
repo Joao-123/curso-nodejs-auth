@@ -573,4 +573,63 @@ Sí, para aplicaciones donde los requisitos de permisos son más complejos, pued
 
 La implementación de un sistema de roles bien estructurado es una base sólida para la seguridad de tu API, permitiendo un control granular sobre lo que cada clase de usuario puede y no puede hacer. Continúa explorando estas best practices para asegurar que tu aplicación se mantiene segura y eficiente.
 
-## 
+## Obteniendo órdenes del perfil
+### ¿Cómo manejar las órdenes de compra con autenticación?
+En la implementación de sistemas que gestionan órdenes de compra, es esencial proteger la información de los usuarios. En la clase, hemos aprendido cómo, mediante el uso de JWT (JSON Web Tokens), podemos hacer que nuestras aplicaciones sean más seguras y a la vez más eficientes. Este proceso permite que los clientes autenticados consulten sus órdenes sin tener que enviar su identificador repetidamente. Vamos a desglosar este procedimiento.
+### ¿Cómo crear un router para manejar las órdenes de compra?
+Para empezar, necesitamos un nuevo router que maneje las órdenes de compra por usuario autenticado. Usamos Express y JWT para desarrollar este nuevo endpoint:
+```js
+const express = require('express');
+const passport = require('passport');
+const ordersService = require('../services/ordersService');
+const router = express.Router();
+
+router.get('/my-orders', 
+  passport.authenticate('jwt', { session: false }),
+  async (req, res, next) => {
+    try {
+      const userId = req.user.sub;
+      const orders = await ordersService.findByUser(userId);
+      res.json(orders);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+```
+Este nuevo router crea un endpoint que devuelve las órdenes de compra para el usuario autenticado, extrayendo su ID del payload del token.
+### ¿Cómo realizar consultas complejas con asociaciones?
+Para manejar la relación entre tablas, empleamos Sequelize, que ofrece la capacidad de realizar consultas complejas. En este caso, tenemos relaciones de uno a uno entre usuario y cliente y cliente y orden.
+```js
+async function findByUser(userId) {
+  return Order.findAll({
+    include: [
+      {
+        association: 'customer',
+        include: [{ association: 'user', where: { id: userId } }]
+      }
+    ]
+  });
+}
+```
+Esta consulta utiliza las asociaciones para encontrar las órdenes correspondientes al usuario autenticado, sin requerir el envío explícito del ID del cliente en cada solicitud.
+### ¿Qué beneficios ofrece el uso de JWT en esta implementación?
+El uso de tokens JWT ofrece varias ventajas:
+- ***Seguridad:*** Los tokens están firmados y tienen una fecha de expiración, lo que previene su uso indevido.
+- ***Simplicidad:*** Permite evitar la transmisión constante de credenciales o identificadores del usuario, ya que el token almacena información suficiente para autenticación.
+- ***Escalabilidad:*** Facilita la implementación en aplicaciones distribuidas, donde la autenticación se puede descentralizar de manera segura.
+### Reto adicional: Automatizando la asociación en nuevas órdenes de compra
+Cuando un usuario autenticado desea crear una nueva orden de compra, el sistema debería poder deducir su `customerId` a partir del `userId` almacenado en el token:
+```js
+async function createOrder(data, userId) {
+  const customer = await Customer.findOne({ where: { userId: userId } });
+  if (!customer) throw new Error('Customer not found');
+  const newOrder = await Order.create({
+    ...data,
+    customerId: customer.id
+  });
+  return newOrder;
+}
+```
+Con este enfoque, eliminamos el paso manual de tener que enviar el `customerId`, lo que simplifica el proceso para el usuario y minimiza errores potenciales.  
+Este tipo de implementaciones no solo ayudan a mantener la integridad y seguridad de los datos del usuario, sino que también proporcionan una experiencia de usuario más fluida y agradable. ¡Sigue explorando y mejorando tus habilidades en el manejo de autenticación y seguridad en aplicaciones web!

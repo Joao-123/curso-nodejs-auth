@@ -37,6 +37,13 @@ class CustomerService {
     return newCustomer;
   }
 
+  async findByUser(id) {
+    const customer = await models.Customer.findOne({
+      where: { userId: id }
+    });
+    return customer;
+  }
+
   async update(id, changes) {
     const model = await this.findOne(id);
     const rta = await model.update(changes);
