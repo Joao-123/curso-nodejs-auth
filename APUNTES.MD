@@ -633,3 +633,27 @@ async function createOrder(data, userId) {
 ```
 Con este enfoque, eliminamos el paso manual de tener que enviar el `customerId`, lo que simplifica el proceso para el usuario y minimiza errores potenciales.  
 Este tipo de implementaciones no solo ayudan a mantener la integridad y seguridad de los datos del usuario, sino que también proporcionan una experiencia de usuario más fluida y agradable. ¡Sigue explorando y mejorando tus habilidades en el manejo de autenticación y seguridad en aplicaciones web!
+
+## Manejo de la autenticación desde el cliente
+### ¿Cómo manejar la autenticación y autorización con tokens desde el cliente?
+La autenticación y autorización basada en tokens es un aspecto esencial cuando se desarrolla una aplicación web. Adoptar prácticas adecuadas garantiza una experiencia de usuario fluida y segura. Abordemos de qué manera un Single Page Application (SPA) desarrollado en Angular, React o Vue puede gestionar sesiones al conectarse a una API.
+### ¿Cuál es la importancia de almacenar el token?
+El manejo correcto de un token después de un login exitoso es crucial. El token es el corazón de la autenticación, ya que se utiliza para autorizar todas las peticiones a la API. ¿Qué deberíamos considerar?
+- ***Guardar el token:*** Es esencial preservar el token que la API nos provee. Esto se puede hacer en `cookies` o en `Local Storage`, aunque las cookies son la opción más segura.
+- ***Estado de inicio de sesión:*** Mantén un estado de login en la aplicación. Esto se puede registrar en Local Storage o cookies para indicar que un usuario ha iniciado sesión.
+### ¿Cómo enviar el token en cada petición?
+Una vez el token está asegurado, es primordial que sea enviado con cada solicitud a la API. Aquí algunos pasos para asegurarse de ello:
+- ***Utilización del encabezado de autorización:*** Cada request debería incluir el token en el encabezado de autorización con el formato: `Authorization: Bearer <token>`.
+- ***Intercepción de peticiones:*** Con bibliotecas como Axios o en frameworks como Angular, es posible interceptar las peticiones para añadir automáticamente el token, evitando hacerlo manualmente en cada request.
+### ¿Cuáles son las tácticas para la expiración del token?
+Los tokens tienen una vida útil limitada por razones de seguridad. Así es como puedes manejarlos:
+- ***Tokens con expiración:*** Usualmente, se aconseja que los tokens caduquen entre 15 a 20 minutos. Sin embargo, cortar la sesión sin previo aviso puede afectar la experiencia de usuario.
+- ***Implementación de Refresh Tokens:*** Aprovecha un refresh token otorgado por la API para solicitar nuevos tokens cuando el access token caduque. Este proceso puede ser automatizado para que sea transparente para el usuario, ofreciendo continúas renovaciones sin necesidad de un nuevo inicio de sesión.
+### ¿Cómo validar y manejar permisos de usuario?
+La seguridad y la gestión de permisos están interrelacionadas en el uso de tokens:
+- ***Verificación de permisos:*** Con el token, se puede consultar al backend el perfil del usuario. Esto asegura que se muestren sólo las funciones autorizadas para el rol específico del usuario.
+- ***Seguridad adicional:*** Para los desarrolladores más conscientes de la seguridad, se podría realizar solicitudes adicionales para obtener el perfil del usuario en lugar de almacenar información sensible localmente.
+
+Con estas consideraciones prácticas, podrás manejar la autenticación y autorización de manera eficiente y segura en tu aplicación. Al seguir estos lineamientos, puedes asegurar una experiencia de usuario positiva mientras mantienes la integridad y seguridad de tu aplicación.
+
+##
