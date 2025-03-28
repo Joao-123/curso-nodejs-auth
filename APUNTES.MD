@@ -879,4 +879,50 @@ Una vez el usuario reciba el correo y acceda al enlace, el sistema de back end d
 
 La capacidad de desarrollar un sistema seguro y eficiente de recuperación de contraseñas es un aspecto crucial del desarrollo de software moderno. A través de separaciones lógicas y una estructura de gestión de tokens, se puede proporcionar a los usuarios una experiencia fluida y segura al recuperar sus credenciales.
 
+## Validando tokens para cambio de contraseña
+### ¿Cómo gestionar el cambio de contraseña con tokens en nuestra aplicación?
+En el mundo del desarrollo web, la seguridad es primordial. Una de las prácticas esenciales es manejar adecuadamente los cambios de contraseña, asegurando que todo el flujo resguarde la información del usuario. En este contenido, exploraremos cómo implementar un sistema seguro de recuperación y cambio de contraseñas utilizando tokens.
+### ¿Cuál es el flujo del proceso de recuperación de password?
+El proceso de recuperación de contraseñas es más que simplemente enviar un correo con un enlace de restablecimiento. Involucra varios pasos para garantizar que solo el usuario legítimo pueda cambiar su contraseña:
+1. ***Interfaz de recuperación de contraseña:*** El usuario proporciona su email en un formulario.
+2. ***Validación del correo:*** Se verifica que el email existe en la base de datos.
+3. ***Generación del token:*** Se crea un token de quince minutos y se envía al usuario por correo.
+4. ***Recepción del correo:*** El usuario recibe un correo con un link que incluye el token.
+5. ***Interfaz para cambiar la contraseña:*** Al hacer clic en el link, el usuario accede a un formulario para introducir una nueva contraseña.
+6. ***Validación y cambio de contraseña:*** Se recibe el token y la nueva contraseña, validando el token y el usuario.
+### ¿Cómo se implementa el cambio de contraseña?
+Para cambiar la contraseña, es esencial que el backend procese correctamente el nuevo password y valide el token. Aquí algunos pasos clave de la implementación:
+- ***División del Router:*** Aparte del endpoint de login, se crea uno nuevo para el cambio de contraseña.
+- ***Validación del token y datos:*** Si los datos no son válidos, se retorna un error. En caso de alguna irregularidad, podemos utilizar bibliotecas como `Boom` para manejar errores y lanzar excepciones.
+```js
+try {
+  const payload = JWT.verify(token, process.env.SECRET);
+  const user = await User.findOne({ _id: payload.sub });
+
+  if (!user || user.recoveryToken !== token) {
+    throw Boom.unauthorized('Token inválido o usuario no encontrado');
+  }
+
+  // Eliminar el token y actualizar la contraseña
+  user.recoveryToken = null;
+  user.password = bcrypt.hashSync(newPassword, saltRounds);
+  await user.save();
+} catch (error) {
+  handleErrors(error);
+}
+```
+### ¿Qué aspectos de seguridad se deben considerar?
+La seguridad en la gestión de contraseñas es esencial para proteger a los usuarios. Algunos aspectos a considerar incluyen:
+- ***Capa de validación de datos:*** Implementar validaciones para asegurar que los `token` y `password` satisfagan criterios de seguridad, como ser alfanuméricos o tener una longitud mínima y máxima.
+- ***Eliminación del token:*** Una vez cambiada la contraseña, el token debe ser invalidado para evitar su reutilización.
+- ***Hashes seguros de contraseñas:*** Utilizar funciones de hash como `bcrypt` para garantizar que las contraseñas no sean almacenadas en texto plano.
+- ***No exponer tokens en las respuestas:*** Evitar devolver información sensible como `recoveryToken` o contraseñas en las respuestas de la API.
+### ¿Qué podemos aprender de este práctica?
+Implementar un sistema seguro de recuperación de contraseñas supone un aprendizaje valioso en la gestión de seguridad de aplicaciones. Al crear este tipo de funcionalidades, practicamos habilidades cruciales como:
+- ***Integración con servicios de correo electrónico:*** Aprendimos a enviar correos utilizando servidores SMTP como los de Gmail.
+- ***Gestión de tokens seguros:*** Asignamos y validamos tokens firmados con secret keys, asegurando un proceso de cambio de contraseña confiable.
+- ***Desarrollo de flujo de usuario:*** Creamos interfaces intuitivas que guían al usuario a través del proceso de recuperación y actualización de contraseña.
+
+El camino hacia una gestión de seguridad efectiva es continuo, pero cada implementación brinda un avance significativo en tus habilidades como desarrollador. Sigue adelante, cada desafío que superas enriquece tu experiencia y te aproxima más a la excelencia.
+
 ## 

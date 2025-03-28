@@ -15,6 +15,7 @@ class UserService {
     // const { password, ...resposeUser } = newUser.dataValues;
     // return resposeUser;
     delete newUser.dataValues.password;
+    delete newUser.dataValues.recoveryToken;
     return newUser;
   }
 
@@ -41,6 +42,7 @@ class UserService {
   }
 
   async update(id, changes) {
+    console.log('llego hasta aqui', id, changes)
     const user = await this.findOne(id);
     const rta = await user.update(changes);
     return rta;
