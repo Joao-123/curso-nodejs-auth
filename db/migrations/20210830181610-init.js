@@ -66,7 +66,7 @@ module.exports = {
       },
       userId: {
         field: 'user_id',
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.DataTypes.INTEGER,
         unique: true,
         references: {
@@ -131,7 +131,7 @@ module.exports = {
       },
       categoryId: {
         field: 'category_id',
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.DataTypes.INTEGER,
         references: {
           model: CATEGORY_TABLE,
@@ -150,7 +150,7 @@ module.exports = {
       },
       customerId: {
         field: 'customer_id',
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.DataTypes.INTEGER,
         references: {
           model: CUSTOMER_TABLE,
@@ -185,7 +185,7 @@ module.exports = {
       },
       orderId: {
         field: 'order_id',
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.DataTypes.INTEGER,
         references: {
           model: ORDER_TABLE,
@@ -196,7 +196,7 @@ module.exports = {
       },
       productId: {
         field: 'product_id',
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.DataTypes.INTEGER,
         references: {
           model: PRODUCT_TABLE,

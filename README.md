@@ -1,0 +1,5 @@
+Nodejs version: 14.17.3
+
+token customer: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc0MzEwOTQ1NH0.SHv9ySNoJLhsAYvxCiEpXxjHoihAwoMXeR0ZvFOYXls
+
+token admin: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0MzExMjg4N30.vq_4qpChCtmq1GjZZ5wrs7nH3cM0QeM3TJ8DGOwOnyA
