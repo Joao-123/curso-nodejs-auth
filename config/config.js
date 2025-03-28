@@ -11,6 +11,8 @@ const config = {
   dbName: process.env.DB_NAME,
   dbPort: process.env.DB_PORT,
   jwtSecret: process.env.JWT_SECRET,
+  gmailUser: process.env.GMAIL_USER,
+  gmailPassword: process.env.GMAIL_PASSWORD,
 }
 
 module.exports = { config };

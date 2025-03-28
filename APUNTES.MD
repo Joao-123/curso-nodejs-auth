@@ -656,4 +656,91 @@ La seguridad y la gestión de permisos están interrelacionadas en el uso de tok
 
 Con estas consideraciones prácticas, podrás manejar la autenticación y autorización de manera eficiente y segura en tu aplicación. Al seguir estos lineamientos, puedes asegurar una experiencia de usuario positiva mientras mantienes la integridad y seguridad de tu aplicación.
 
-##
+## Cómo enviar emails con Node.js
+### ¿Cómo implementar la recuperación de contraseñas en una API con Node.js?
+Implementar un sistema de recuperación de contraseñas es un elemento crucial en cualquier aplicación moderna. En esta sección, exploraremos cómo coordinar la recuperación de contraseñas usando una API construida con Node.js, Express, y la útil librería [NodeMailer](https://nodemailer.com/about/) para el envío de correos electrónicos.
+### ¿Cómo enviar correos para la recuperación de contraseñas?
+El primer paso para la recuperación de contraseñas es configurar el envío de correos. Vamos a utilizar la librería **NodeMailer**, que simplifica el proceso de envío de correos en Node.js, al ofrecer servicios como envío de textos enriquecidos o incluso con adjuntos.
+### Instalación y configuración de NodeMailer
+Para instalar NodeMailer, usa el siguiente comando en tu terminal:
+```cmd
+npm install nodemailer
+```
+Con NodeMailer instalado, es momento de crear un archivo base que usaremos para el envío de correos:
+```js
+const nodemailer = require('nodemailer');
+
+async function sendEmail() {
+    // Configuración del transporte usando un servidor SMTP de prueba
+    let testAccount = await nodemailer.createTestAccount();
+    let transporter = nodemailer.createTransport({
+        host: 'smtp.ethereal.email',
+        port: 587,
+        secure: false,
+        auth: {
+            user: testAccount.user,
+            pass: testAccount.pass,
+        },
+    });
+
+    // Detalles del envío del correo
+    let info = await transporter.sendMail({
+        from: '"Ejemplo App" <noreply@example.com>',
+        to: "usuario@ejemplo.com",
+        subject: "Recuperación de contraseña",
+        text: "Recupera tu contraseña siguiendo este enlace",
+        html: "<b>Recupera tu contraseña siguiendo este enlace</b>",
+    });
+
+    console.log("Message sent: %s", info.messageId);
+    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+}
+
+sendEmail().catch(console.error);
+```
+### ¿Cómo hacer pruebas con servidores SMTP falsos?
+NodeMailer permite el uso de servicios SMTP falsos, ideales para probar nuestro flujo sin enviar correos reales. Estos servidores, como Ethereal, proporcionan cuentas de prueba para enviar correos sintéticamente.
+### Configuración de un servidor SMTP de prueba
+Para utilizar [Ethereal](ethereal.email), accede a `ethereal.email` y genera una cuenta de prueba. Con esta configuración, podrás emular un flujo de correos electrónicos sin enviar mensajes reales a usuarios.
+```js
+let testAccount = await nodemailer.createTestAccount();
+let transporter = nodemailer.createTransport({
+    host: 'smtp.ethereal.email',
+    port: 587,
+    secure: false,
+    auth: {
+        user: testAccount.user,
+        pass: testAccount.pass,
+    },
+});
+```
+### ¿Cómo enviar correos reales con NodeMailer y Gmail?
+Si deseas pasar de un entorno de prueba a uno real, puedes usar servidores SMTP reales como el de Gmail. Para hacerlo, necesitas configurar tu cuenta de Gmail para permitir el acceso de “apps menos seguras”.
+### Configuración con Gmail SMTP
+Asegúrate de seguir los pasos a continuación para usar Gmail como servidor SMTP:
+1. Habilitar la autenticación de dos factores en tu cuenta de Google.
+2. Crear una contraseña de aplicación desde la sección de seguridad de tu cuenta de Google.
+
+Con la contraseña generada, modifique tu configuración de NodeMailer:
+```js
+let transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
+    auth: {
+        user: 'tuusuario@gmail.com',
+        pass: 'tupasswordgeneradaporapp',
+    },
+});
+```
+Este fragmento muestra cómo configurar NodeMailer para enviar correos reales a través de Gmail. Recuerda siempre almacenar credenciales sensibles como variables de entorno para asegurar tu aplicación.
+### Recomendaciones finales y buenas prácticas
+Veamos algunos consejos y mejores prácticas cuando trabajas con NodeMailer y el envío de emails mediante servidores SMTP:
+- ***Seguridad***: Siempre utiliza variables de entorno para almacenar credenciales sensoriales, y evita exponer contraseñas en tu código.
+- ***Pruebas locales***: Aprovecha los servicios SMTP falsos para realizar pruebas sin correr riesgos de enviar correos reales.
+- ***Registro y Monitoreo***: Implementa un sistema de logging para registrar claramente los detalles de los envíos de correos y detectar cualquier fallo o problema en el proceso.
+- ***Manejo de Errores***: Implementa manejo de excepciones robusto para controlar errores en el envío de correos y asegurar que la aplicación pueda recuperarse de ellos.
+
+Con estos conceptos y configuraciones, puedes implementar un sistema robusto de recuperación de contraseñas en tu aplicación. Este es solo el comienzo de un enfoque extensible para mejorar tanto la seguridad como la experiencia del usuario en tus aplicaciones.
+
+## 
