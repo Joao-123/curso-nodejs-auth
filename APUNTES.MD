@@ -743,4 +743,98 @@ Veamos algunos consejos y mejores prácticas cuando trabajas con NodeMailer y el
 
 Con estos conceptos y configuraciones, puedes implementar un sistema robusto de recuperación de contraseñas en tu aplicación. Este es solo el comienzo de un enfoque extensible para mejorar tanto la seguridad como la experiencia del usuario en tus aplicaciones.
 
+## Implementando el envío de emails
+### ¿Cómo implementar la recuperación de contraseñas en tu API?
+En el vasto universo del desarrollo de software, la seguridad de las credenciales de los usuarios es primordial. Implementar un sistema de recuperación de contraseñas es un proceso esencial para asegurar la confianza y protección de los usuarios. Hoy te enseñaremos cómo puedes establecer un endpoint seguro de recuperación de contraseñas en tu API. Vamos a profundizar en el código y los pasos necesarios para implementarlo correctamente.
+### ¿Cuál es el primer paso para crear la funcionalidad de recuperación?
+Comenzamos creando una nueva ruta en la API para gestionar la recuperación de las contraseñas. Esta ruta utilizará un método POST y no requerirá autenticación, ya que precisamente está diseñada para aquellos usuarios que no pueden acceder a sus cuentas:
+```js
+// Creación de la ruta de recuperación
+app.post('/recovery', (req, res) => {
+    const { email } = req.body;
+    // Implementación posterior
+});
+```
+En esta ruta, lo primordial es capturar el email del usuario que desea recuperar su contraseña.
+### ¿Cómo centralizar la lógica de autenticación?
+Mantener la lógica dispersa en varias partes del código puede ser problemático, sobre todo en términos de mantenimiento y escalabilidad. Por ello, se debe migrar toda la lógica de autenticación a un servicio unificado:
+1. Crear un nuevo archivo `auth.service.js`.
+2. Migrar la lógica de autenticación de lugares dispersos a este archivo.
+3. Utilizar este servicio en `local strategy` para obtener un usuario en base al email y password.
+```js
+// auth.service.js
+class AuthService {
+    async getUser(email, password) {
+        // Lógica para obtener y validar usuario
+    }
+
+    async signToken(user) {
+        // Lógica para firmar el token
+    }
+
+    async sendEmail(user) {
+        // Lógica para enviar el correo electrónico
+    }
+}
+
+module.exports = AuthService;
+```
+### ¿Cómo configurar y utilizar el envío de correos?
+La herramienta NotMailer es una opción práctica para el envío de correos electrónicos de recuperación. Aquí es donde se configura el transporter de NotMailer y se implementa el envío del email de recuperación:
+1. Importar la librería `notmailer`.
+2. Configurar el transporter con las credenciales adecuadas.
+3. Crear la funcionalidad para enviar un email de recuperación:
+```js
+const nodemailer = require('nodemailer');
+
+// Configuración del transporter
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+    },
+});
+
+// Función para enviar correo
+async function sendRecoveryEmail(email) {
+    let info = await transporter.sendMail({
+        from: '"Service Name" <service@example.com>',
+        to: email,
+        subject: "Recovery Password",
+        text: "Click here to reset your password.",
+    });
+
+    console.log('Message sent: %s', info.messageId);
+}
+```
+### ¿Cómo asegurar el proceso de recuperación?
+Al implementar la recuperación de contraseñas, es crucial verificar que el email proporcionado existe en la base de datos. Esto evita que se envíen emails a direcciones que no forman parte del sistema:
+```js
+async function recovery(req, res) {
+    try {
+        const { email } = req.body;
+        const user = await userService.findUserByEmail(email);
+
+        if (!user) {
+            throw new Error('Unauthorized');
+        }
+
+        await sendRecoveryEmail(user.email);
+        res.status(200).json({ message: 'Mail sent' });
+
+    } catch (error) {
+        res.status(401).json({ error: error.message });
+    }
+}
+```
+### ¿Cómo realizar pruebas y ajustes finales?
+Finalmente, es importante verificar que el endpoint es funcional mediante pruebas en la aplicación, por ejemplo, usando herramientas como Insomnia o Postman. Al realizar estos ensayos, asegúrate de:
+- Probar con emails válidos y no válidos.
+- Revisar que el sistema no revele información innecesaria que un atacante podría usar maliciosamente.
+
+La configuración y variables sensibles, como el usuario y la contraseña del email, deben almacenarse como variables de entorno para evitar cualquier filtración de información. Esta práctica es esencial para mantener la seguridad y privacidad de tus datos y los de tus usuarios.
+### Conclusiones y próximos pasos
+Implementar una ruta de recuperación de contraseña no solo mejora la experiencia del usuario, sino también refuerza la seguridad de tu aplicación. Asegúrate de seguir desarrollando y mejorando tus servicios para ofrecer funcionalidades robustas y seguras. ¡El viaje del aprendizaje continuo en programación siempre tiene nuevos y emocionantes horizontes por descubrir!
+
 ## 
