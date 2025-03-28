@@ -837,4 +837,46 @@ La configuración y variables sensibles, como el usuario y la contraseña del em
 ### Conclusiones y próximos pasos
 Implementar una ruta de recuperación de contraseña no solo mejora la experiencia del usuario, sino también refuerza la seguridad de tu aplicación. Asegúrate de seguir desarrollando y mejorando tus servicios para ofrecer funcionalidades robustas y seguras. ¡El viaje del aprendizaje continuo en programación siempre tiene nuevos y emocionantes horizontes por descubrir!
 
+## Generando links de recuperación
+### ¿Cómo generar enlaces de recuperación de contraseña de forma segura?
+Generar enlaces de recuperación de contraseña es crucial para garantizar la seguridad de tus usuarios. Vamos a ver cómo podemos hacer esto de manera eficiente y segura utilizando un método separado para enviar correos electrónicos, permitiéndonos reutilizar el código para otras funcionalidades.
+### ¿Cómo separar responsabilidades en la gestión de correos electrónicos?
+Para empezar, separamos la parte de envío de correos electrónicos en una función distinta para poder reutilizarla en diferentes casos de uso. Creamos un método llamado `resetPassword` que recibirá el email del usuario y ejecutará la lógica de envío de correo. Aquí es importante mantener las configuraciones de transporte, mientras que desacoplamos la lógica específica del correo.
+### ¿Cómo funciona el proceso de creación del token de recuperación?
+El proceso parte de la creación de un token usando `JWT`, que asegurará que el enlace sea único y seguro para cada usuario.
+```js
+const payload = { sub: user.ID };
+const token = generateToken(payload, secret);
+```
+El token generado deberá enviarse al usuario dentro de un enlace, el cual permitirá la recuperación de su contraseña en el front end cuando sea necesario.
+### ¿Cómo integrar el enlace de recuperación en el correo electrónico?
+Una vez generado el token, lo integramos en un enlace dentro del correo que permite al usuario acceder directamente al sistema de recuperación de contraseñas:
+```js
+const link = `http://myfrontend.com/recovery?token=${token}`;
+```
+Es fundamental que el front end cuente con una vista que maneje este proceso de recuperación y capture el token proporcionado.
+### ¿Cómo manejar la seguridad del token?
+El token no solo debe ser único, sino que además debe almacenarse de manera segura en la base de datos. Se debe crear un campo adicional en la base de datos para almacenar este token, lo cual requiere una migración en una base de datos relacional:
+```js
+await queryInterface.addColumn('User', 'recoveryToken', {
+  type: DataTypes.STRING,
+  allowNull: true,
+});
+```
+### ¿Cómo se verifica y expira el token?
+Este token debe configurarse para que expire automáticamente después de un tiempo definido (por ejemplo, 15 minutos), proporcionando un nivel adicional de seguridad y obligando al usuario a solicitar un nuevo enlace en caso de caducar.
+### ¿Cómo preparar la base de datos para la recuperación de contraseñas?
+Al ejecutar el comando de migración, agregamos un nuevo campo `recoveryToken` en la base de datos:
+```cmd
+npx sequelize-cli db:migrate
+```
+Esto nos permitirá realizar un "match" con el token enviado al usuario para validar su autenticidad.
+### ¿Qué hacer después de enviar el enlace de recuperación?
+Una vez el usuario reciba el correo y acceda al enlace, el sistema de back end debe estar preparado para:
+- Verificar la validez del token.
+- Permitir al usuario cambiar su contraseña.
+- Alertar a los responsables del front end para adecuar las vistas y funcionalidades necesarias.
+
+La capacidad de desarrollar un sistema seguro y eficiente de recuperación de contraseñas es un aspecto crucial del desarrollo de software moderno. A través de separaciones lógicas y una estructura de gestión de tokens, se puede proporcionar a los usuarios una experiencia fluida y segura al recuperar sus credenciales.
+
 ## 

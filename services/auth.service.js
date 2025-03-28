@@ -36,28 +36,44 @@ class AuthService {
     };
   }
 
-  async sendMail(email) {
+  async sendRecovery(email) {
     const user = await service.findByEmail(email)
     if (!user) {
       throw boom.unauthorized()
     }
-  const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    secure: true, // true for port 465, false for other ports
-    port: 465,
-    auth: {
-      user: config.gmailUser,
-      pass: config.gmailPassword
+    const payload = {
+      sub: user.id,
     }
-  });
-  await transporter.sendMail({
-    from: '👻 ' + config.gmailUser,
-    to: user.email,
-    subject: "Este correo viene de mi app de Node (subject)",
-    text: "(text) hola, este es mi primer correo enviado de una app",
-    html: "<b>Hello charly</b>",
-  });
-  return { message: 'mail sent' }
+    const token = jwt.sign(
+      payload,
+      config.jwtSecret, // opcional utilizar otro secret para recuperacion de password
+      {expiresIn: '15min'}
+    );
+    const link = `http://myfrontend.com/recovery?token=${token}`;
+    await service.update(user.id, {recoveryToken: token});
+    const mail = {
+      from: '👻 ' + config.gmailUser,
+      to: user.email,
+      subject: "Email para recuperar contraseña",
+      html: `<b>Ingresa a este link => ${link} </b>`,
+    }
+    const rta = await this.sendMail(mail);
+    return rta;
+  }
+
+  async sendMail(infoMail) {
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      secure: true,
+      port: 465,
+      auth: {
+        user: config.gmailUser,
+        pass: config.gmailPassword
+      }
+    });
+
+    await transporter.sendMail(infoMail);
+    return { message: 'mail sent' }
   }
 }
 
