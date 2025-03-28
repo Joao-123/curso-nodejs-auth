@@ -945,3 +945,47 @@ Finalmente, te animo a calificar el curso con cinco estrellas y compartir tus co
 
 ---
 
+1. ¿Cuál es la capa que evalúa si un usuario puede o no ingresar al sistema?  
+Autenticación
+
+2. ¿Cuál es la capa que evalúa los permisos de un usuario?  
+Autorización
+
+3. ¿Cuál es la forma correcta de obtener el atributo 'api' desde los headers de una petición?  
+req.headers['api']
+
+4. ¿Por qué es importante hacer un hash de las contraseñas?  
+Para proteger a nuestros usuarios de cualquier ataque o filtración de datos en donde se exponga esa información.
+
+5. ¿Cuál es la forma correcta de crear un hash usando bcrypt?  
+bcrypt.hash(myPlaintextPassword, saltRounds)
+
+6. ¿Cuál es el objetivo de instalar y usar Passport.js en la app?  
+Nos provee una serie de middlewares para manejar la capa de autenticación.
+
+7. ¿Cuál middleware de Passport.js funciona para hacer un inicio de sesión?  
+passport-local
+
+8. ¿Es posible saber el contenido de un JWT?  
+Verdadero
+
+9. ¿Cuál es el método para generar un JWT?  
+jwt.sign({...}, 'my-secret');
+
+10. ¿Cuál es la forma de aplicar el middleware de inicio de sesión dentro de una ruta?  
+router.post('/login', passport.authenticate('local', {session: false}), () => {})
+
+11. ¿Cuál middleware de Passport.js funciona verificar que cada ruta tenga un JWT válido?  
+passport-jwt
+
+12. ¿Cuál es la forma de aplicar el middleware que verifica el JWT para dar acceso o no a una ruta?  
+router.post('/create', passport.authenticate('jwt', {session: false}), () => {})
+
+13. Si usamos Gmail para envío de correos, ¿cuál es la configuración correcta de host para Nodemail?  
+smtp.gmail.com
+
+14. ¿Cuál es el método para verificar un JWT?  
+jwt.verify(token, 'my-secret');
+
+15. El secret el JWT debe ser guardado dentro del código y no en una variable de ambiente.  
+Falso
