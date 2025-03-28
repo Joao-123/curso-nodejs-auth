@@ -925,4 +925,23 @@ Implementar un sistema seguro de recuperación de contraseñas supone un aprendi
 
 El camino hacia una gestión de seguridad efectiva es continuo, pero cada implementación brinda un avance significativo en tus habilidades como desarrollador. Sigue adelante, cada desafío que superas enriquece tu experiencia y te aproxima más a la excelencia.
 
-## 
+## Deploy en Heroku
+> Deprecado
+
+## Cómo seguir aprendiendo backend con Node.js
+### ¿Qué aprendizajes clave obtuviste del curso de autenticación GoodNove.js?
+Has completado con éxito el curso de autenticación GoodNove.js, logrando un conocimiento sólido en la implementación de sistemas de autenticación y autorización utilizando JSON Web Tokens (JWT). Esta tecnología te permite manejar sesiones de forma segura y eficiente, destacándose por su flexibilidad para integrarse en diferentes plataformas.
+### ¿Cómo se integran los JSON Web Tokens en diferentes aplicaciones?
+Los JSON Web Tokens son herramientas poderosas gracias a su capacidad para adaptarse a múltiples aplicaciones. Puedes utilizar JSWT en:
+- Aplicaciones web, donde el front-end se maneja por frameworks como Angular o Vue.js.
+- Aplicaciones móviles, tanto en plataformas Android como iOS, facilitando una experiencia de usuario consistente y segura.
+### ¿Qué métodos de autorización se implementaron durante el curso?
+El curso también abarcó prácticas avanzadas de manejo de permisos. Utilizando middleware, se configuraron capas de autorización basadas en los roles de usuario. Esto no solo asegura que solo los usuarios autorizados puedan acceder a ciertas funcionalidades, sino que también fortalece la seguridad general del sistema.
+### ¿Cómo se realizó el sistema de reset de contraseñas?
+Implementaste un sistema integral para el restablecimiento de contraseñas, que garantiza que el proceso sea seguro. Este enfoque no solo refuerza la confianza del usuario en el manejo de sus datos sensibles, sino que también protege tu aplicación de intentos de violación de seguridad.
+### ¿Qué sigue después de este curso?
+Ahora que has adquirido estos conocimientos, vale la pena explorar cómo estas técnicas pueden ser aplicadas a escenarios del mundo real, como conectar una tienda online a sistemas de pagos. Si estás interesado en continuar tu aprendizaje, considera dejar un comentario sobre la temática de pagos para que puedan desarrollarse futuros cursos que complementen tus habilidades.  
+Finalmente, te animo a calificar el curso con cinco estrellas y compartir tus comentarios con el instructor para poder seguir mejorando y ofreciendo contenidos valiosos. Puedes encontrar al instructor en redes sociales con el usuario @NicoBites, donde estará atento a resolver tus dudas. ¡Sigue explorando y aprendiendo en tu camino hacia la excelencia en el desarrollo web!
+
+---
+
